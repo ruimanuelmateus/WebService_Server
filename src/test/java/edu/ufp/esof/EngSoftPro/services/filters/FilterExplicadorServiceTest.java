@@ -102,7 +102,7 @@ class FilterExplicadorServiceTest {
         explicadores.add(explicador3);
 
 
-        FilterExplicadorObject filterObject=new FilterExplicadorObject(dia, cursoName, LocalTime.of(12,0),LocalTime.of(19,0));
+        FilterExplicadorObject filterObject=new FilterExplicadorObject(dia, cursoName, LocalTime.of(12,0),LocalTime.of(19,0), null);
         //FilterExplicadorObject filterObject=new FilterExplicadorObject("Rui",null,null,null, null);
         FilterExplicadorService filterOrderService=new FilterExplicadorService();
         System.out.println(filterObject);

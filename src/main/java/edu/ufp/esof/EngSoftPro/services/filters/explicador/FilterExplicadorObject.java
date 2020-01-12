@@ -21,19 +21,21 @@ public class FilterExplicadorObject {
     //private String explicadorName;
     private LocalTime startHour;
     private LocalTime endHour;
+    private String idioma;
 
-    public FilterExplicadorObject(DayOfWeek dia, String cursoName, LocalTime startHour, LocalTime endHour) {
+    public FilterExplicadorObject(DayOfWeek dia, String cursoName, LocalTime startHour, LocalTime endHour, String idioma) {
         this.dia = dia;
         this.cursoName = cursoName;
         //this.explicadorName = explicadorName;
         this.startHour=startHour;
         this.endHour=endHour;
+        this.idioma=idioma;
     }
 
     public FilterExplicadorObject(Map<String, String> searchParams) {
         //this();
         this.cursoName=searchParams.get("curso");
-        //this.explicadorName=searchParams.get("nome");
+        this.idioma=searchParams.get("idioma");
         String dia=searchParams.get("dia");
         DayOfWeek dia1=null;
         String horaI=searchParams.get("startHour");
