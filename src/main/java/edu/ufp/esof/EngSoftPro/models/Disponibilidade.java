@@ -20,14 +20,37 @@ public class Disponibilidade {
     private Long id;
 
     private DayOfWeek dia;
-    private LocalTime hora;
+    private LocalTime horaIni;
+    private LocalTime horaFim;
 
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference/*(value = "explicador-disponibilidade")*/
+    @JsonBackReference(value = "explicador-disponibilidade")
     private Explicador explicador;
 
+    public Disponibilidade(Long id, DayOfWeek dia, LocalTime horaIni, LocalTime horaFim, Explicador explicador){
+        this.id=id;
+        this.dia=dia;
+        this.horaIni=horaIni;
+        this.horaFim=horaFim;
+        this.explicador=explicador;
+    }
 
+    public boolean contains(Explicacao explicacao){
+        DayOfWeek dayOfWeek= explicacao.getDia();
+        if(dayOfWeek.equals(this.dia)){
+            LocalTime appointmentStart= explicacao.getInicio();
+            LocalTime appointmentEnd= explicacao.getFim();
+            return this.contains(appointmentStart,appointmentEnd);
+        }
+        return false;
+    }
+
+    private boolean contains(LocalTime start, LocalTime end){
+        return (this.horaIni.isBefore(start) || this.horaIni.equals(start))
+                &&
+                (this.horaFim.isAfter(end) || this.horaFim.equals(end)) ;
+    }
 }

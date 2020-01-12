@@ -2,7 +2,7 @@ package edu.ufp.esof.EngSoftPro.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ufp.esof.EngSoftPro.models.Aluno;
-import edu.ufp.esof.EngSoftPro.repositories.AlunoRepo;
+import edu.ufp.esof.EngSoftPro.services.AlunoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,7 +25,7 @@ class AlunoControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AlunoRepo alunoRepo;
+    private AlunoService alunoService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,7 +38,7 @@ class AlunoControllerTest {
     void getAlunoById() throws Exception {
         Aluno existingAluno=new Aluno("Rui");
         existingAluno.setId( 10L);
-        when(this.alunoRepo.findById(existingAluno.getId())).thenReturn(Optional.of(existingAluno));
+        when(this.alunoService.findById(existingAluno.getId())).thenReturn(Optional.of(existingAluno));
 
         String responseJSON=this.mockMvc.perform(
                 get("/aluno/10")
@@ -62,12 +62,14 @@ class AlunoControllerTest {
 
         String requestJson=this.objectMapper.writeValueAsString(aluno);
 
+        when(alunoService.createAluno(aluno)).thenReturn(Optional.of(aluno));
+
         this.mockMvc.perform(
                 post("/aluno").contentType(MediaType.APPLICATION_JSON).content(requestJson)
         ).andExpect(status().isOk());
 
         Aluno existingAluno=new Aluno("Mateus");
-        when(this.alunoRepo.findByName("Mateus")).thenReturn(Optional.of(existingAluno));
+        when(this.alunoService.findByName("Mateus")).thenReturn(Optional.of(existingAluno));
 
         String existingAlunoJSON=this.objectMapper.writeValueAsString(existingAluno);
 

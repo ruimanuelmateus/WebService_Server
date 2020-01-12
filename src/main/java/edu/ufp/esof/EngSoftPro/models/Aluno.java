@@ -21,8 +21,9 @@ public class Aluno {
     private Long id;
 
     private String name;
-    private String address;
-    private String phone;
+    //private String address;
+    private String password;
+    //private String phone;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
@@ -34,7 +35,21 @@ public class Aluno {
     @JsonManagedReference(value = "aluno-explicacao")
     private Set<Explicacao> explicacoes=new HashSet<>();
 
-    public Aluno(String name) {
-        this.setName(name);
+    public Aluno(Long id, String name, String password, Curso curso, Set<Explicacao> explicacoes) {
+        this.id=id;
+        this.name=name;
+        this.password=password;
+        this.curso=curso;
+        this.explicacoes=explicacoes;
+    }
+
+    public Aluno(String name){
+        this.name=name;
+    }
+
+
+    public void addExplicacao(Explicacao explicacao){
+        this.explicacoes.add(explicacao);
+        explicacao.setAluno(this);
     }
 }

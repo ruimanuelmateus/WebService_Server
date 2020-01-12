@@ -2,7 +2,9 @@ package edu.ufp.esof.EngSoftPro.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ufp.esof.EngSoftPro.models.Explicador;
-import edu.ufp.esof.EngSoftPro.repositories.ExplicadorRepo;
+import edu.ufp.esof.EngSoftPro.repositories.AlunoRepo;
+import edu.ufp.esof.EngSoftPro.repositories.ExplicacaoRepo;
+import edu.ufp.esof.EngSoftPro.services.ExplicadorService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,22 +27,17 @@ class ExplicadorControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ExplicadorRepo explicadorRepo;
+    private ExplicadorService explicadorService;
 
     @Autowired
     private ObjectMapper objectMapper;
-
-
-    @Test
-    void getAllExplicadores() {
-        }
 
     @Test
     void getExplicadorById() throws Exception
     {
         Explicador existingExplicador=new Explicador("Rui");
         existingExplicador.setId( 10L);
-        when(this.explicadorRepo.findById(existingExplicador.getId())).thenReturn(Optional.of(existingExplicador));
+        when(this.explicadorService.findById(10L)).thenReturn(Optional.of(existingExplicador));
 
         String responseJSON=this.mockMvc.perform(
                 get("/explicador/10")
@@ -62,19 +59,70 @@ class ExplicadorControllerTest {
     void createExplicador() throws Exception {
         Explicador explicador=new Explicador("Rui");
 
-        String requestJson=this.objectMapper.writeValueAsString(explicador);
+        String jsonRequest=this.objectMapper.writeValueAsString(explicador);
+
+        when(explicadorService.createExplicador(explicador)).thenReturn(Optional.of(explicador));
 
         this.mockMvc.perform(
-                post("/explicador").contentType(MediaType.APPLICATION_JSON).content(requestJson)
-        ).andExpect(status().isOk());
+                post("/explicador").contentType(MediaType.APPLICATION_JSON).content(jsonRequest)
+        ).andExpect(
+                status().isOk()
+        );
+
 
         Explicador existingExplicador=new Explicador("Mateus");
-        when(this.explicadorRepo.findByName("Mateus")).thenReturn(Optional.of(existingExplicador));
 
-        String existingExplicadorJSON=this.objectMapper.writeValueAsString(existingExplicador);
+        when(this.explicadorService.createExplicador(existingExplicador)).thenReturn(Optional.empty());
+
+        String existingExplicadorJson=this.objectMapper.writeValueAsString(existingExplicador);
 
         this.mockMvc.perform(
-                post("/explicador").contentType(MediaType.APPLICATION_JSON).content(existingExplicadorJSON)
-        ).andExpect(status().isBadRequest());
+                post("/explicador").contentType(MediaType.APPLICATION_JSON).content(existingExplicadorJson)
+        ).andExpect(
+                status().isBadRequest()
+        );
+    }
+
+    @Test
+    void getAllExplicadores() {
+    }
+
+
+    @Test
+    void searchExplicadores() {
+    }
+
+    @Test
+    void searchExplicadorName() throws Exception{
+        Explicador existingExplicador=new Explicador("Rui");
+        existingExplicador.setId(1L);
+        when(this.explicadorService.searchByName("Rui")).thenReturn(Optional.of(existingExplicador));
+
+        String responseJSON=this.mockMvc.perform(
+                get("/explicador/{name}","Rui")
+        ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        Explicador resultExplicador=this.objectMapper.readValue(responseJSON, Explicador.class);
+
+        System.out.println(responseJSON);
+
+        assertEquals(existingExplicador, resultExplicador);
+
+        this.mockMvc.perform(
+                get("/explicador/11")
+        ).andExpect(status().isNotFound());
+    }
+
+
+    @Test
+    void addCursoToExplicador() {
+    }
+
+    @Test
+    void addDisponibilidade() {
+    }
+
+    @Test
+    void addExplicadorToFaculdade() {
     }
 }

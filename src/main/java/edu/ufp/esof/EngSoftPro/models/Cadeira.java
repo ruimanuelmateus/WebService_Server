@@ -22,13 +22,28 @@ public class Cadeira {
 
     private String name;
 
-    @OneToMany(mappedBy = "cadeira", cascade = CascadeType.PERSIST)
-    @JsonManagedReference(value = "explicador-cadeira")
+    public Cadeira(String name) {
+        this.name = name;
+    }
+
+    //@OneToMany(mappedBy = "cadeira", cascade = CascadeType.PERSIST)
+    //@JsonManagedReference(value = "explicador-cadeira")
+    //@ManyToOne(cascade = CascadeType.PERSIST)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference (value = "explicador-cadeira")
+    @ManyToMany( cascade = CascadeType.PERSIST)
     private Set<Explicador> explicadores=new HashSet<>();
+
+    public void addExplicador(Explicador explicador){
+        this.explicadores.add(explicador);
+    }
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference (value = "cadeira-curso")
     private Curso curso;
+
+
 }

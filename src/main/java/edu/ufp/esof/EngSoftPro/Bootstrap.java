@@ -23,6 +23,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
     @Autowired
     private ExplicacaoRepo explicacaoRepo;
 
+    @Autowired
+    private ExplicadorRepo explicadorRepo;
+
     private Logger logger= LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -33,10 +36,13 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
         Disponibilidade disponibilidade1=new Disponibilidade();
         disponibilidade1.setDia(DayOfWeek.SUNDAY);
-        disponibilidade1.setHora(LocalTime.NOON);
+        disponibilidade1.setHoraIni(LocalTime.NOON);
+        disponibilidade1.setHoraFim(LocalTime.MIDNIGHT);
+
         Disponibilidade disponibilidade2=new Disponibilidade();
         disponibilidade2.setDia(DayOfWeek.SATURDAY);
-        disponibilidade2.setHora(LocalTime.NOON);
+        disponibilidade2.setHoraIni(LocalTime.of(15,30));
+        disponibilidade2.setHoraFim(LocalTime.of(18,30));
 
         explicador1.addDisponibilidade(disponibilidade1);
         explicador1.addDisponibilidade(disponibilidade2);
@@ -56,6 +62,9 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         Cadeira cadeira2=new Cadeira();
         cadeira2.setName("Eng Car");
 
+        explicador1.addCadeira(cadeira1);
+        //explicadorRepo.save(explicador1);
+
         Faculdade faculdade=new Faculdade();
         faculdade.setName("Pessoa");
         curso1.setFaculdade(faculdade);
@@ -63,6 +72,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         cadeira1.setCurso(curso1);
         cadeira2.setCurso(curso2);
 
+        explicador1.addCurso(curso1);
 
         aluno1.setCurso(curso1);
         aluno2.setCurso(curso2);
@@ -72,8 +82,7 @@ public class Bootstrap implements ApplicationListener<ContextRefreshedEvent> {
         explicacao.setExplicador(explicador1);
         explicacao.setCadeira(cadeira1);
 
-        //explicador1.setCadeira(cadeira1);
-        //erro
+
 
         this.explicacaoRepo.save(explicacao);
 

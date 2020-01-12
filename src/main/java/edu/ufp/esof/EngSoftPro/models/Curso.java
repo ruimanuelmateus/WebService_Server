@@ -25,17 +25,40 @@ public class Curso {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonBackReference
+    @JsonBackReference (value = "uni-curso")
     private Faculdade faculdade;
 
     @OneToMany(mappedBy = "curso",cascade = CascadeType.PERSIST)
-    @JsonManagedReference
+    @JsonManagedReference (value = "cadeira-curso")
     private Set<Cadeira> cadeiras=new HashSet<>();
 
     @OneToMany(mappedBy = "curso",cascade = CascadeType.PERSIST)
     @JsonManagedReference(value = "aluno-curso")
     private Set<Aluno> alunos=new HashSet<>();
 
+    @OneToMany(mappedBy = "curso",cascade = {CascadeType.PERSIST,CascadeType.ALL})
+    @JsonManagedReference(value = "exp-curso")
+    //@EqualsAndHashCode.Exclude
+    private Set<Explicador> explicadores=new HashSet<>();
 
+    public Curso(String name){
+        this.name=name;
+    }
+
+    public void addFaculdade(Faculdade faculdade) {
+        this.faculdade=faculdade;
+    }
+
+    public void addExplicador(Explicador explicador){
+        this.explicadores.add(explicador);
+    }
+
+    public void addCadeira(Cadeira cadeira){
+        this.cadeiras.add(cadeira);
+    }
+
+    public void removeExplicador(Explicador explicador){
+        this.explicadores.remove(explicador);
+    }
 
 }
